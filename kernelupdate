@@ -1,0 +1,50 @@
+#!/bin/sh
+
+#download amd64|i386
+DownInstall() { wget $(lynx -dump -listonly $link | egrep 'all|'$@ ) ; echo sudo dpkg -i *.deb ; }
+
+link=$(lynx --dump http://kernel.ubuntu.com/~kernel-ppa/mainline/ | awk '/http/{print $2}'  | grep -v rc | tail -n 1)
+KVERSION=$(echo $link | cut -d "/" -f 6)
+
+LastKernelInstalled=$(ls /boot/ | grep img | cut -d "-" -f2 | tail -n 1)
+LastKernelAvaliable=$(echo $KVERSION | sed -e "s/v//g"  | cut -d "-" -f1 )
+LastKernelRC=$(lynx --dump http://kernel.ubuntu.com/~kernel-ppa/mainline/ | awk '/http/{print $2}'  | grep rc | tail -n 1 | cut -d "/" -f 6)
+
+echo "\n\n\t[UBUNTU KERNELS] \
+\n\n\t-Last installed :\t $LastKernelInstalled \
+\n\t-Last Stable online :\t $LastKernelAvaliable
+\n\t-Last RC online :\t $LastKernelRC"
+
+
+if [ $LastKernelInstalled = $LastKernelAvaliable ] #controlla l'ultimo kernel installato 
+   then echo  "\n\n\t--> gia' aggiornato alla versione $KVERSION \
+	       \n\t    per disinstallarlo: sudo apt-get purge linux-image-$LastKernelInstalled* \n\n" #Indica come disinstallare l'ultimo kernel installato
+	exit
+   else echo "\n\n\t--> aggiornando alla versione " $KVERSION  "\n\n"
+fi
+
+
+########################
+
+echo "$(tput setaf 3)---kernel $KVERSION will be installed in an `uname -i` system---$(tput sgr0)"
+sleep 2
+read -p "Press Enter to continue, or abort by pressing CTRL+C" nothing
+echo "/n/n"
+
+DownloadFolder=$HOME/Scrivania/kernel_$KVERSION
+echo $DownloadFolder
+mkdir -p $DownloadFolder
+cd $DownloadFolder
+
+#System architecture
+arch=`uname -m`
+if  [ $arch = i686 ] || [ $arch = i386 ]; then
+	DownInstall i386
+  elif [ $arch = "x86_64" ]; then
+	DownInstall amd64
+  else
+        echo "Unsupported Architecture"
+fi
+sudo dpkg -i *.deb
+sudo apt-get install -f
+sudo rm -rf $DownloadFolder
