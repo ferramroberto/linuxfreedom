@@ -1,0 +1,32 @@
+[Desktop Entry]
+Version=1.0
+Name=Google Chrome Aura Shell
+# Only KDE 4 seems to use GenericName, so we reuse the KDE strings.
+# From Ubuntu's language-pack-kde-XX-base packages, version 9.04-20090413.
+GenericName=Web Browser
+GenericName[it]=Browser Web
+# Not translated in KDE, from Epiphany 2.26.1-0ubuntu1.
+# Gnome and KDE 3 uses Comment.
+Comment=Access the Internet
+Comment[it]=Accesso a Internet
+Exec=/usr/bin/google-chrome-stable --open-ash
+Terminal=false
+Icon=google-chrome
+Type=Application
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml_xml;image/webp;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;
+X-Ayatana-Desktop-Shortcuts=NewWindow;NewIncognito
+
+Name[it]=Google Chrome Aura Shell
+
+[NewWindow Shortcut Group]
+Name=New Window
+Name[it]=Nuova finestra
+Exec=/usr/bin/google-chrome-stable
+TargetEnvironment=Unity
+
+[NewIncognito Shortcut Group]
+Name=New Incognito Window
+Name[it]=Nuova finestra di navigazione in incognito
+Exec=/usr/bin/google-chrome-stable --incognito
+TargetEnvironment=Unity
